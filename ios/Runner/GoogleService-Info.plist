@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>195658674761-fitd850gdg12so5sl3ptosllffl2j8ho.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.195658674761-fitd850gdg12so5sl3ptosllffl2j8ho</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBOytiXz0spiELmXfLdChcwN0IRPD_2fVg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>195658674761</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>app.getoutfit.stylist</string>
+	<key>PROJECT_ID</key>
+	<string>getoutfit-stylist</string>
+	<key>STORAGE_BUCKET</key>
+	<string>getoutfit-stylist.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:195658674761:ios:b2f7bab77de744b6e70598</string>
+	<key>DATABASE_URL</key>
+	<string>https://getoutfit-stylist.firebaseio.com</string>
+</dict>
+</plist>
