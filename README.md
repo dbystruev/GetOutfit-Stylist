@@ -22,7 +22,7 @@ flutter create .
 ### iOS
 - [ios/Runner.xcodeproj/project.pbxproj](https://github.com/dbystruev/GetOutfit-Stylist/blob/master/ios/Runner.xcodeproj/project.pbxproj):
   - change PRODUCT_BUNDLE_IDENTIFIER (3 times) to your *iOS Bundle ID* from Firebase, or
-  - change project's *Bundle Identifier* in Xcode your *iOS Bundle ID* from Firebase
+  - change project's *Bundle Identifier* in Xcode to your *iOS Bundle ID* from Firebase
 
 - [ios/Runner/Info.plist](https://github.com/dbystruev/GetOutfit-Stylist/blob/master/ios/Runner/Info.plist):
   - replace *CFBundleURLSchemes* string value with REVERSED_CLIENT_ID string value from ***ios/Runner/GoogleService-Info.plist***, or
