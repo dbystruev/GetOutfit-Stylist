@@ -33,5 +33,12 @@
 # Web related
 lib/generated_plugin_registrant.dart
 
+# Apple iCloud
+*.icloud
+
+# Google Firebase
+google-services.json
+GoogleService-Info.plist
+
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
