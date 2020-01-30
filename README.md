@@ -38,3 +38,6 @@ flutter create .
 ```bash
 flutter run
 ```
+
+## Acknowledgements
+[Reed Barger](https://github.com/reedbarger) for [*Build a Social Network with Flutter and Firebase*](https://www.packtpub.com/web-development/build-a-social-network-with-flutter-and-firebase-video)
