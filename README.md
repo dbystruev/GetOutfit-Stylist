@@ -2,6 +2,8 @@
 
 GetOutfit.app for Stylists.
 
+![Screenshot](https://github.com/dbystruev/GetOutfit-Stylist/blob/master/assets/screenshots/screenshot.png?raw=true)
+
 ## Getting Started
 
 ```bash
