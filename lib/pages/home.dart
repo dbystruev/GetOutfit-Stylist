@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+final googleSignIn = GoogleSignIn();
 
 class Home extends StatefulWidget {
   @override
@@ -13,22 +16,11 @@ class _HomeState extends State<Home> {
   final buttonDownImage = 'assets/images/google_signin_dark_pressed.png';
   final buttonUpImage = 'assets/images/google_signin_dark_normal.png';
 
-  void buttonDown(_) {
-    setState(() {
-      isButtonPressed = true;
-      print('Button Down');
-    });
-  }
-
-  void buttonUp([_]) {
-    setState(() {
-      isButtonPressed = false;
-      print('Button Up');
-    });
-  }
-
   Widget buildAuthScreen() {
-    return Text('Authorized');
+    return RaisedButton(
+      child: Text('Logout'),
+      onPressed: logout,
+    );
   }
 
   Scaffold buildUnAuthScreen() {
@@ -77,5 +69,55 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return isAuth ? buildAuthScreen() : buildUnAuthScreen();
+  }
+
+  void buttonDown(_) {
+    setState(() {
+      isButtonPressed = true;
+    });
+  }
+
+  void buttonUp([tapUpDetails]) {
+    setState(() {
+      isButtonPressed = false;
+      if (tapUpDetails != null) login();
+    });
+  }
+
+  void handleSignIn(GoogleSignInAccount account) {
+    setState(() {
+      isAuth = account != null;
+    });
+    if (isAuth) print('User Signed In: $account');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Detects when user signed in or out
+    googleSignIn.onCurrentUserChanged.listen(
+      (account) {
+        handleSignIn(account);
+      },
+      onError: (error) {
+        print('ERROR Signing In: $error');
+      },
+    );
+
+    // Reauthenticate user when app is opened
+    googleSignIn.signInSilently(suppressErrors: false).then((account) {
+      handleSignIn(account);
+    }).catchError((error) {
+      print('ERROR Signing In Silently: $error');
+    });
+  }
+
+  void login() {
+    googleSignIn.signIn();
+  }
+
+  void logout() {
+    googleSignIn.signOut();
   }
 }

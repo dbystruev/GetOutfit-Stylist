@@ -11,6 +11,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Home(),
+      theme: ThemeData(
+        accentColor: Colors.teal,
+        primarySwatch: Colors.teal,
+      ),
       title: 'GetOutfit Stylist',
     );
   }
