@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:getoutfit_stylist/pages/home.dart';
+import 'package:getoutfit_stylist/controllers/login_logout.dart';
 
 class Profile extends StatefulWidget {
   @override

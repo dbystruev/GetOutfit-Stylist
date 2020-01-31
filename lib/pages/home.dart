@@ -1,21 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getoutfit_stylist/controllers/login_logout.dart';
 import 'package:getoutfit_stylist/pages/activity_feed.dart';
 import 'package:getoutfit_stylist/pages/profile.dart';
 import 'package:getoutfit_stylist/pages/search.dart';
 import 'package:getoutfit_stylist/pages/timeline.dart';
 import 'package:getoutfit_stylist/pages/upload.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
-final googleSignIn = GoogleSignIn();
-
-void login() {
-  googleSignIn.signIn();
-}
-
-void logout() {
-  googleSignIn.signOut();
-}
 
 class Home extends StatefulWidget {
   @override
