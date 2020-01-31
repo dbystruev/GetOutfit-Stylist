@@ -12,10 +12,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Home(),
       theme: ThemeData(
-        accentColor: Colors.teal,
+        accentColor: Colors.teal[600],
         primarySwatch: Colors.teal,
       ),
-      title: 'GetOutfit Stylist',
+      title: 'Get Outfit',
     );
   }
 }
