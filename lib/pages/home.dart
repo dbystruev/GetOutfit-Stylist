@@ -168,6 +168,10 @@ class _HomeState extends State<Home> {
   }
 
   void onTap(int pageIndex) {
-    pageController.jumpToPage(pageIndex);
+    pageController.animateToPage(
+      pageIndex,
+      curve: Curves.easeInOut,
+      duration: Duration(milliseconds: 300),
+    );
   }
 }
