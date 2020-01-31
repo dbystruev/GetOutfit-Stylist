@@ -1,8 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getoutfit_stylist/pages/activity_feed.dart';
+import 'package:getoutfit_stylist/pages/profile.dart';
+import 'package:getoutfit_stylist/pages/search.dart';
+import 'package:getoutfit_stylist/pages/timeline.dart';
+import 'package:getoutfit_stylist/pages/upload.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 final googleSignIn = GoogleSignIn();
+
+void login() {
+  googleSignIn.signIn();
+}
+
+void logout() {
+  googleSignIn.signOut();
+}
 
 class Home extends StatefulWidget {
   @override
@@ -12,14 +25,51 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool isAuth = false;
   bool isButtonPressed = false;
+  PageController pageController;
+  int pageIndex = 0;
 
   final buttonDownImage = 'assets/images/google_signin_dark_pressed.png';
   final buttonUpImage = 'assets/images/google_signin_dark_normal.png';
 
   Widget buildAuthScreen() {
-    return RaisedButton(
-      child: Text('Logout'),
-      onPressed: logout,
+    return Scaffold(
+      body: PageView(
+        children: <Widget>[
+          Timeline(),
+          ActivityFeed(),
+          Upload(),
+          Search(),
+          Profile(),
+        ],
+        controller: pageController,
+        onPageChanged: onPageChanged,
+        physics: NeverScrollableScrollPhysics(),
+      ),
+      bottomNavigationBar: CupertinoTabBar(
+        activeColor: Theme.of(context).primaryColor,
+        currentIndex: pageIndex,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.whatshot), // Timeline
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_active), // Activity Feed
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.photo_camera, // Upload
+              size: 35,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search), // Search
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle), // Profile
+          ),
+        ],
+        onTap: onTap,
+      ),
     );
   }
 
@@ -84,6 +134,12 @@ class _HomeState extends State<Home> {
     });
   }
 
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
   void handleSignIn(GoogleSignInAccount account) {
     setState(() {
       isAuth = account != null;
@@ -94,6 +150,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    pageController = PageController();
 
     // Detects when user signed in or out
     googleSignIn.onCurrentUserChanged.listen(
@@ -113,11 +170,13 @@ class _HomeState extends State<Home> {
     });
   }
 
-  void login() {
-    googleSignIn.signIn();
+  void onPageChanged(int pageIndex) {
+    setState(() {
+      this.pageIndex = pageIndex;
+    });
   }
 
-  void logout() {
-    googleSignIn.signOut();
+  void onTap(int pageIndex) {
+    pageController.jumpToPage(pageIndex);
   }
 }
