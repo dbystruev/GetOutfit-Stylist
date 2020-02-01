@@ -19,5 +19,6 @@ Container linearProgress(BuildContext context) {
         Theme.of(context).accentColor,
       ),
     ),
+    padding: EdgeInsets.only(bottom: 10),
   );
 }

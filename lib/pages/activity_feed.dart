@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:getoutfit_stylist/widgets/progress.dart';
 
 class ActivityFeed extends StatefulWidget {
   @override
@@ -9,7 +8,9 @@ class ActivityFeed extends StatefulWidget {
 class _ActivityFeedState extends State<ActivityFeed> {
   @override
   Widget build(BuildContext context) {
-    return circularProgress(context);
+    return Center(
+      child: Text('Activity Feed'),
+    );
   }
 }
 

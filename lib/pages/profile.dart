@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/login_logout.dart';
 import 'package:getoutfit_stylist/widgets/header.dart';
+import 'package:getoutfit_stylist/widgets/progress.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -12,11 +13,16 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: header(context, titleText: "Profile"),
-      body: Center(
-        child: RaisedButton(
-          child: Text('LOG OUT'),
-          onPressed: logout,
-        ),
+      body: Column(
+        children: <Widget>[
+          linearProgress(context),
+          RaisedButton(
+            child: Text('LOG OUT'),
+            onPressed: logout,
+          ),
+          SizedBox(),
+        ],
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
       ),
     );
   }
