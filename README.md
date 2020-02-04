@@ -54,6 +54,9 @@ flutter create .
   
   #### xattr Error Solution
   `xattr -cr build/ios/Debug-iphonesimulator/Runner.app`
+  
+  #### 3. Other iOS Errors
+  Try [guides.codepath.com/ios/Fixing-Xcode](https://guides.codepath.com/ios/Fixing-Xcode)
 
 ### Run project
 ```bash
