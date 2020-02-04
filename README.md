@@ -33,6 +33,27 @@ flutter create .
 ### Android
 - [android/app/build.gradle](https://github.com/dbystruev/GetOutfit-Stylist/blob/master/android/app/build.gradle):
   - change android { defaultConfig { applicationId }} to your *Android package name* from Firebase
+  
+### Build Errors
+  #### 1. Firebase Error
+  ```bash
+  Configuring the default Firebase app...
+  *** First throw call stack:
+  ```
+  
+  #### Firebase Error Solution
+  1. Remove `ios/Runner/GoogleService-Info.plist`
+  2. Launch Xcode: `cd ios && open Runner.xcworkspace`
+  3. Re-add `GoogleService-Info.plist` next to `Info.plist` through Xcode
+  
+  #### 2. xattr Error
+  ```bash
+  build/ios/Debug-iphonesimulator/Runner.app: resource fork, Finder information, or similar detritus not allowed
+  Command CodeSign failed with a nonzero exit code
+  ```
+  
+  #### xattr Error Solution
+  `xattr -cr build/ios/Debug-iphonesimulator/Runner.app`
 
 ### Run project
 ```bash
