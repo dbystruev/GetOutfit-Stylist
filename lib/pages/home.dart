@@ -1,12 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/login_logout.dart';
 import 'package:getoutfit_stylist/pages/activity_feed.dart';
+import 'package:getoutfit_stylist/pages/create_account.dart';
 import 'package:getoutfit_stylist/pages/profile.dart';
 import 'package:getoutfit_stylist/pages/search.dart';
 import 'package:getoutfit_stylist/pages/timeline.dart';
 import 'package:getoutfit_stylist/pages/upload.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+final CollectionReference userRef = Firestore.instance.collection('users');
+final DateTime timestamp = DateTime.now();
 
 class Home extends StatefulWidget {
   @override
@@ -125,6 +130,41 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void createUserInFirestore() async {
+    // 1) Check if user exists in Firestore's users collection
+    final GoogleSignInAccount user = googleSignIn.currentUser;
+    if (user == null) {
+      print('ERROR: Current user is null in createUserInFirestore()');
+      return;
+    }
+    final DocumentSnapshot doc =
+        await usersRef.document(user.id).get().catchError((error) {
+      print('ERROR: Can\'t get user\'s document in createUserInFirestore()');
+      return;
+    });
+
+    if (!doc.exists) {
+      // 2) If the user doesn't exist, show the create account page
+      final String username = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CreateAccount(),
+        ),
+      );
+
+      // 3) Get username from create account page and create new user in collection
+      usersRef.document(user.id).setData({
+        'bio': '',
+        'displayName': user.displayName,
+        'email': user.email,
+        'id': user.id,
+        'photoUrl': user.photoUrl,
+        'timestamp': timestamp,
+        'username': username,
+      });
+    }
+  }
+
   @override
   void dispose() {
     pageController.dispose();
@@ -132,10 +172,12 @@ class _HomeState extends State<Home> {
   }
 
   void handleSignIn(GoogleSignInAccount account) {
-    setState(() {
-      isAuth = account != null;
-    });
-    if (isAuth) print('User Signed In: $account');
+    if (account != null) {
+      createUserInFirestore();
+      setState(() => isAuth = true);
+    } else {
+      setState(() => isAuth = false);
+    }
   }
 
   @override
