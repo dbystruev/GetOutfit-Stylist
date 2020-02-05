@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/widgets/header.dart';
 
@@ -7,7 +8,8 @@ class CreateAccount extends StatefulWidget {
 }
 
 class _CreateAccountState extends State<CreateAccount> {
-  final GlobalKey formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   String username;
 
   @override
@@ -16,6 +18,7 @@ class _CreateAccountState extends State<CreateAccount> {
       appBar: header(
         context,
         titleText: 'Set up your profile',
+        removeBackButton: true,
       ),
       body: ListView(
         children: <Widget>[
@@ -35,6 +38,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   child: Container(
                     child: Form(
                       child: TextFormField(
+                        autovalidate: true,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Must be at least 3 characters',
@@ -42,6 +46,13 @@ class _CreateAccountState extends State<CreateAccount> {
                           labelStyle: TextStyle(fontSize: 15),
                         ),
                         onSaved: (val) => username = val,
+                        validator: (val) {
+                          if (val.trim().length < 3)
+                            return 'Username too short';
+                          if (12 < val.trim().length)
+                            return 'Username too long';
+                          return null;
+                        },
                       ),
                       key: formKey,
                     ),
@@ -74,12 +85,25 @@ class _CreateAccountState extends State<CreateAccount> {
           ),
         ],
       ),
+      key: scaffoldKey,
     );
   }
 
   void submit() {
     final FormState form = formKey.currentState;
-    form.save();
-    Navigator.pop(context, username);
+
+    if (form.validate()) {
+      form.save();
+
+      final SnackBar snackbar = SnackBar(
+        content: Text('Welcome, $username!'),
+      );
+
+      scaffoldKey.currentState.showSnackBar(snackbar);
+
+      Timer(Duration(seconds: 2), () {
+        Navigator.pop(context, username);
+      });
+    }
   }
 }
