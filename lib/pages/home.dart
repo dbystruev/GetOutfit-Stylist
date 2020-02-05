@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/login_logout.dart';
+import 'package:getoutfit_stylist/models/user.dart';
 import 'package:getoutfit_stylist/pages/activity_feed.dart';
 import 'package:getoutfit_stylist/pages/create_account.dart';
 import 'package:getoutfit_stylist/pages/profile.dart';
@@ -12,6 +13,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 final CollectionReference userRef = Firestore.instance.collection('users');
 final DateTime timestamp = DateTime.now();
+User currentUser;
 
 class Home extends StatefulWidget {
   @override
@@ -133,11 +135,13 @@ class _HomeState extends State<Home> {
   void createUserInFirestore() async {
     // 1) Check if user exists in Firestore's users collection
     final GoogleSignInAccount user = googleSignIn.currentUser;
+
     if (user == null) {
       print('ERROR: Current user is null in createUserInFirestore()');
       return;
     }
-    final DocumentSnapshot doc =
+
+    DocumentSnapshot doc =
         await usersRef.document(user.id).get().catchError((error) {
       print('ERROR: Can\'t get user\'s document in createUserInFirestore()');
       return;
@@ -161,8 +165,21 @@ class _HomeState extends State<Home> {
         'photoUrl': user.photoUrl,
         'timestamp': timestamp,
         'username': username,
+      }).catchError((error) {
+        print('ERROR: Can\'t add user to Firestore in createUserInFirestore()');
+        return;
+      });
+
+      doc = await usersRef.document(user.id).get().catchError((error) {
+        print(
+            'ERROR: Can\'t get user back from Firestore in createUserInFirestore()');
+        return;
       });
     }
+
+    currentUser = User.fromDocument(doc);
+    print(
+        'Current User: ${currentUser.username} (${currentUser.displayName}) ${currentUser.email}');
   }
 
   @override
