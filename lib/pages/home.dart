@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:getoutfit_stylist/controllers/login_logout.dart';
+import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/user.dart';
 import 'package:getoutfit_stylist/pages/activity_feed.dart';
 import 'package:getoutfit_stylist/pages/create_account.dart';
@@ -11,7 +11,6 @@ import 'package:getoutfit_stylist/pages/timeline.dart';
 import 'package:getoutfit_stylist/pages/upload.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-final CollectionReference userRef = Firestore.instance.collection('users');
 final DateTime timestamp = DateTime.now();
 User currentUser;
 
@@ -160,6 +159,7 @@ class _HomeState extends State<Home> {
       usersRef.document(user.id).setData({
         'bio': '',
         'displayName': user.displayName,
+        'displayNameLowercase': user.displayName.toLowerCase(),
         'email': user.email,
         'id': user.id,
         'photoUrl': user.photoUrl,

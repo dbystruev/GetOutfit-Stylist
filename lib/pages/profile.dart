@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:getoutfit_stylist/controllers/login_logout.dart';
+import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/widgets/header.dart';
 import 'package:getoutfit_stylist/widgets/progress.dart';
 
