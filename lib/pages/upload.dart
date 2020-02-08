@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/user.dart';
 import 'package:getoutfit_stylist/pages/home.dart';
@@ -167,7 +168,7 @@ class _UploadState extends State<Upload> {
                 'Current location',
                 style: TextStyle(color: Colors.white),
               ),
-              onPressed: () => print('Get user location'),
+              onPressed: getUserLocation,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
@@ -214,6 +215,20 @@ class _UploadState extends State<Upload> {
       'timestamp': timestamp,
       'username': user.username,
     });
+  }
+
+  void getUserLocation() async {
+    final Geolocator geolocator = Geolocator();
+    final Position position = await geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    final List<Placemark> placemarks = await geolocator
+        .placemarkFromCoordinates(position.latitude, position.longitude);
+    final Placemark placemark = placemarks.first;
+    final String completeAddress =
+        '${placemark.subThoroughfare} ${placemark.thoroughfare}, ${placemark.subLocality} ${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea} ${placemark.postalCode}, ${placemark.country}';
+    print(completeAddress);
+    final String formattedAddress = '${placemark.locality}, ${placemark.country}';
+    locationController.text = formattedAddress;
   }
 
   void handleSubmit() async {

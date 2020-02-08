@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Please allow to determine look&apos;s location</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Please allow to take photo</string>
 	<key>NSPhotoLibraryUsageDescription</key>
