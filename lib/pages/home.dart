@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.photo_camera, // Upload
+              Icons.file_upload, // Upload
               size: 35,
             ),
           ),

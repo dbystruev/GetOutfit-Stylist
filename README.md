@@ -66,4 +66,4 @@ flutter run
 ## Acknowledgements
 [Reed Barger](https://github.com/reedbarger) for [*Build a Social Network with Flutter and Firebase*](https://www.packtpub.com/web-development/build-a-social-network-with-flutter-and-firebase-video)
 
-User search icon designed by [Icongeek26](https://www.flaticon.com/authors/icongeek26) from [Flaticon](https://www.flaticon.com)
+Icons designed by [Icongeek26](https://www.flaticon.com/authors/icongeek26) from [Flaticon](https://www.flaticon.com)
