@@ -1,9 +1,16 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/user.dart';
+import 'package:getoutfit_stylist/pages/home.dart';
+import 'package:getoutfit_stylist/widgets/progress.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as Im;
+import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class Upload extends StatefulWidget {
   final User currentUser;
@@ -15,6 +22,11 @@ class Upload extends StatefulWidget {
 }
 
 class _UploadState extends State<Upload> {
+  final String lookId = Uuid().v4();
+  final TextEditingController locationController = TextEditingController();
+  final TextEditingController lookDescriptionController =
+      TextEditingController();
+  bool isUploading = false;
   File file;
 
   @override
@@ -38,7 +50,7 @@ class _UploadState extends State<Upload> {
             child: RaisedButton(
               color: Theme.of(context).primaryColor,
               child: Text(
-                'Upload The Look',
+                'Upload New Look',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 22,
@@ -63,7 +75,7 @@ class _UploadState extends State<Upload> {
       appBar: AppBar(
         actions: <Widget>[
           FlatButton(
-            onPressed: () => print('Save button pressed'),
+            onPressed: isUploading ? null : () => handleSubmit(),
             child: Text(
               'Save',
               style: TextStyle(
@@ -88,19 +100,20 @@ class _UploadState extends State<Upload> {
       ),
       body: ListView(
         children: <Widget>[
+          isUploading ? linearProgress(context) : Text(''),
           Container(
             child: Center(
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.contain,
-                      image: FileImage(file),
-                    ),
+              // child: AspectRatio(
+              //   aspectRatio: 16 / 9,
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.contain,
+                    image: FileImage(file),
                   ),
                 ),
               ),
+              // ),
             ),
             height: 0.5 * MediaQuery.of(context).size.height,
             width: 0.8 * MediaQuery.of(context).size.width,
@@ -115,6 +128,7 @@ class _UploadState extends State<Upload> {
             ),
             title: Container(
               child: TextField(
+                controller: lookDescriptionController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Look description',
@@ -132,6 +146,7 @@ class _UploadState extends State<Upload> {
             ),
             title: Container(
               child: TextField(
+                controller: locationController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Location',
@@ -167,6 +182,54 @@ class _UploadState extends State<Upload> {
 
   void clearImage() {
     setState(() => file = null);
+  }
+
+  Future<void> compressImage() async {
+    final Directory tempDir = await getTemporaryDirectory();
+    final String path = tempDir.path;
+    final Im.Image imageFile = Im.decodeImage(
+      file.readAsBytesSync(),
+    );
+    final File compressedImageFile = File('$path/img_$lookId.jpg')
+      ..writeAsBytesSync(
+        Im.encodeJpg(imageFile, quality: 85),
+      );
+    setState(() => file = compressedImageFile);
+  }
+
+  void createLookInFirestore(
+      {String description, String location, String mediaUrl}) {
+    final User user = widget.currentUser;
+    looksRef
+        .document(user.id)
+        .collection('userLooks')
+        .document(lookId)
+        .setData({
+      'description': description,
+      'likes': {},
+      'location': location,
+      'lookId': lookId,
+      'mediaUrl': mediaUrl,
+      'ownerId': user.id,
+      'timestamp': timestamp,
+      'username': user.username,
+    });
+  }
+
+  void handleSubmit() async {
+    setState(() => isUploading = true);
+    await compressImage();
+    final String mediaUrl = await uploadImage(file);
+    createLookInFirestore(
+        description: lookDescriptionController.text,
+        location: locationController.text,
+        mediaUrl: mediaUrl);
+    locationController.clear();
+    lookDescriptionController.clear();
+    setState(() {
+      file = null;
+      isUploading = false;
+    });
   }
 
   void handleTakePhoto() async {
@@ -220,5 +283,13 @@ class _UploadState extends State<Upload> {
       },
       context: parentContext,
     );
+  }
+
+  Future<String> uploadImage(File imageFile) async {
+    final StorageUploadTask uploadTask =
+        storageRef.child('look_$lookId.jpg').putFile(imageFile);
+    final StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
+    final String downloadUrl = await storageSnapshot.ref.getDownloadURL();
+    return downloadUrl;
   }
 }
