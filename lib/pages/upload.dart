@@ -1,9 +1,15 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:getoutfit_stylist/models/user.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Upload extends StatefulWidget {
+  final User currentUser;
+
+  Upload({this.currentUser});
+
   @override
   _UploadState createState() => _UploadState();
 }
@@ -52,10 +58,115 @@ class _UploadState extends State<Upload> {
     );
   }
 
-  Center buildUploadForm() {
-    return Center(
-      child: Text('Uploaded $file'),
+  Scaffold buildUploadForm() {
+    return Scaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => print('Save button pressed'),
+            child: Text(
+              'Save',
+              style: TextStyle(
+                color: Theme.of(context).accentColor,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        ],
+        backgroundColor: Colors.white70,
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+            onPressed: clearImage),
+        title: Text(
+          'New Look',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+      body: ListView(
+        children: <Widget>[
+          Container(
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.contain,
+                      image: FileImage(file),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            height: 0.5 * MediaQuery.of(context).size.height,
+            width: 0.8 * MediaQuery.of(context).size.width,
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 10),
+          ),
+          ListTile(
+            leading: CircleAvatar(
+              backgroundImage:
+                  CachedNetworkImageProvider(widget.currentUser.photoUrl),
+            ),
+            title: Container(
+              child: TextField(
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Look description',
+                ),
+              ),
+              width: 250,
+            ),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(
+              Icons.pin_drop,
+              color: Theme.of(context).primaryColor,
+              size: 35,
+            ),
+            title: Container(
+              child: TextField(
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Location',
+                ),
+              ),
+              width: 250,
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: RaisedButton.icon(
+              color: Theme.of(context).primaryColor,
+              icon: Icon(
+                Icons.my_location,
+                color: Colors.white,
+              ),
+              label: Text(
+                'Current location',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () => print('Get user location'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+            height: 100,
+            width: 200,
+          ),
+        ],
+      ),
     );
+  }
+
+  void clearImage() {
+    setState(() => file = null);
   }
 
   void handleTakePhoto() async {

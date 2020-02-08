@@ -34,7 +34,7 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           Timeline(),
           ActivityFeed(),
-          Upload(),
+          Upload(currentUser: currentUser),
           Search(),
           Profile(),
         ],
