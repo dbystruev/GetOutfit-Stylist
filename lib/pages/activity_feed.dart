@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:getoutfit_stylist/controllers/firebase.dart';
+import 'package:getoutfit_stylist/widgets/progress.dart';
 
 class ActivityFeed extends StatefulWidget {
   @override
@@ -8,8 +10,16 @@ class ActivityFeed extends StatefulWidget {
 class _ActivityFeedState extends State<ActivityFeed> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Activity Feed'),
+    return Column(
+      children: <Widget>[
+        linearProgress(context),
+        RaisedButton(
+          child: Text('LOG OUT'),
+          onPressed: logout,
+        ),
+        SizedBox(),
+      ],
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
     );
   }
 }

@@ -1,9 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
+import 'package:getoutfit_stylist/models/user.dart';
 import 'package:getoutfit_stylist/widgets/header.dart';
 import 'package:getoutfit_stylist/widgets/progress.dart';
 
 class Profile extends StatefulWidget {
+  final String profileId;
+
+  Profile({this.profileId});
+
   @override
   _ProfileState createState() => _ProfileState();
 }
@@ -13,17 +19,114 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: header(context, titleText: "Profile"),
-      body: Column(
+      body: ListView(
         children: <Widget>[
-          linearProgress(context),
-          RaisedButton(
-            child: Text('LOG OUT'),
-            onPressed: logout,
-          ),
-          SizedBox(),
+          buildProfileHeader(),
         ],
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
       ),
+    );
+  }
+
+  Column buildCountColumn(String label, int count) {
+    return Column(
+      children: <Widget>[
+        Text(
+          count.toString(),
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Container(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          margin: EdgeInsets.only(top: 4),
+        ),
+      ],
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+    );
+  }
+
+  Widget buildProfileButton() {
+    return Text('Profile Button');
+  }
+
+  FutureBuilder buildProfileHeader() {
+    return FutureBuilder(
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return circularProgress(context);
+        final user = User.fromDocument(snapshot.data);
+        return Padding(
+          child: Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    backgroundImage: CachedNetworkImageProvider(user.photoUrl),
+                    radius: 40,
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            buildCountColumn('posts', 0),
+                            buildCountColumn('followers', 0),
+                            buildCountColumn('following', 0),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisSize: MainAxisSize.max,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            buildProfileButton(),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        ),
+                      ],
+                    ),
+                    flex: 1,
+                  ),
+                ],
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  user.username,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                padding: EdgeInsets.only(top: 12),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  user.displayName,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                padding: EdgeInsets.only(top: 4),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(user.bio),
+                padding: EdgeInsets.only(top: 2),
+              ),
+            ],
+          ),
+          padding: EdgeInsets.all(16),
+        );
+      },
+      future: usersRef.document(widget.profileId).get(),
     );
   }
 }

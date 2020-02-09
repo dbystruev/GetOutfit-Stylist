@@ -101,7 +101,7 @@ class _UploadState extends State<Upload> {
       ),
       body: ListView(
         children: <Widget>[
-          isUploading ? linearProgress(context) : Text(''),
+          isUploading ? linearProgress(context) : Text(' '),
           Container(
             child: Center(
               // child: AspectRatio(
@@ -227,7 +227,8 @@ class _UploadState extends State<Upload> {
     final String completeAddress =
         '${placemark.subThoroughfare} ${placemark.thoroughfare}, ${placemark.subLocality} ${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea} ${placemark.postalCode}, ${placemark.country}';
     print(completeAddress);
-    final String formattedAddress = '${placemark.locality}, ${placemark.country}';
+    final String formattedAddress =
+        '${placemark.locality}, ${placemark.country}';
     locationController.text = formattedAddress;
   }
 
