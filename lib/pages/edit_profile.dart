@@ -56,75 +56,77 @@ class _EditProfileState extends State<EditProfile> {
       ),
       body: isLoading
           ? circularProgress(context)
-          : ListView(
-              children: <Widget>[
-                Container(
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        child: CircleAvatar(
-                          backgroundImage:
-                              CachedNetworkImageProvider(user.photoUrl),
-                          radius: 50,
-                        ),
-                        padding: EdgeInsets.only(
-                          bottom: 8,
-                          top: 16,
-                        ),
-                      ),
-                      Padding(
-                        child: Column(
-                          children: <Widget>[
-                            buildField(
-                              'Display Name',
-                              controller: displayNameController,
-                              validator: displayNameValidator,
-                            ),
-                            buildField(
-                              'Bio',
-                              controller: bioController,
-                              validator: bioValidator,
-                            )
-                          ],
-                        ),
-                        padding: EdgeInsets.all(16),
-                      ),
-                      RaisedButton(
-                        color: Theme.of(context).primaryColor,
-                        child: Text(
-                          'Update Profile',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+          : SafeArea(
+              child: ListView(
+                children: <Widget>[
+                  Container(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          child: CircleAvatar(
+                            backgroundImage:
+                                CachedNetworkImageProvider(user.photoUrl),
+                            radius: 50,
+                          ),
+                          padding: EdgeInsets.only(
+                            bottom: 8,
+                            top: 16,
                           ),
                         ),
-                        onPressed: updateProfileData,
-                      ),
-                      Padding(
-                        child: FlatButton.icon(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            logout();
-                          },
-                          icon: Icon(
-                            Icons.cancel,
-                            color: Colors.red,
+                        Padding(
+                          child: Column(
+                            children: <Widget>[
+                              buildField(
+                                'Display Name',
+                                controller: displayNameController,
+                                validator: displayNameValidator,
+                              ),
+                              buildField(
+                                'Bio',
+                                controller: bioController,
+                                validator: bioValidator,
+                              )
+                            ],
                           ),
-                          label: Text(
-                            'Log Out',
+                          padding: EdgeInsets.all(16),
+                        ),
+                        RaisedButton(
+                          color: Theme.of(context).primaryColor,
+                          child: Text(
+                            'Update Profile',
                             style: TextStyle(
-                              color: Colors.red,
+                              color: Colors.white,
                               fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
+                          onPressed: updateProfileData,
                         ),
-                        padding: EdgeInsets.all(16),
-                      )
-                    ],
+                        Padding(
+                          child: FlatButton.icon(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              logout();
+                            },
+                            icon: Icon(
+                              Icons.cancel,
+                              color: Colors.red,
+                            ),
+                            label: Text(
+                              'Log Out',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          padding: EdgeInsets.all(16),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
       key: scaffoldKey,
     );

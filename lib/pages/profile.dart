@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/user.dart';
 import 'package:getoutfit_stylist/pages/edit_profile.dart';
@@ -40,7 +41,7 @@ class _ProfileState extends State<Profile> {
           children: <Widget>[
             buildProfileHeader(),
             Divider(),
-            buildToggleListOrientation(),
+            if (looks.isNotEmpty) buildToggleListOrientation(),
             Divider(height: 0),
             buildProfileLooks(),
           ],
@@ -188,7 +189,34 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget buildProfileLooks() {
+    final Orientation orientation = MediaQuery.of(context).orientation;
     if (isLoading) return circularProgress(context);
+    if (looks.isEmpty)
+      return Container(
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 40),
+              child: SvgPicture.asset(
+                'assets/images/no_content.svg',
+                height: orientation == Orientation.portrait ? 300 : 200,
+              ),
+            ),
+            Padding(
+              child: Text(
+                'No Looks',
+                style: TextStyle(
+                  color: Colors.redAccent,
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              padding: EdgeInsets.only(top: 20),
+            )
+          ],
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
+      );
     switch (lookOrientation) {
       case LookOrientation.grid:
         final List<GridTile> gridTiles = looks
