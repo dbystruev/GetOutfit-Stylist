@@ -32,7 +32,7 @@ class Look {
   }
 
   // Count likes
-  int get likeCount => likes == null
+  int get likeCount => likes?.values == null || likes.values.isEmpty
       ? 0
       : likes.values
           .map((like) => like ? 1 : 0) // true is 1 and false is 0

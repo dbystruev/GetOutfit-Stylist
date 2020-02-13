@@ -60,7 +60,7 @@ class _ProfileState extends State<Profile> {
             color: Theme.of(context).primaryColor,
           ),
           height: 27,
-          width: 250,
+          width: 200,
         ),
         onPressed: onPressed,
       ),
@@ -110,7 +110,7 @@ class _ProfileState extends State<Profile> {
     return FutureBuilder(
       builder: (context, snapshot) {
         if (!snapshot.hasData) return circularProgress(context);
-        final user = User.fromDocument(snapshot.data);
+        final User user = User.fromDocument(snapshot.data);
         return Padding(
           child: Column(
             children: <Widget>[

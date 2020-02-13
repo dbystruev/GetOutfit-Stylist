@@ -28,6 +28,11 @@ class _HomeState extends State<Home> {
   final buttonDownImage = 'assets/images/google_signin_dark_pressed.png';
   final buttonUpImage = 'assets/images/google_signin_dark_normal.png';
 
+  @override
+  Widget build(BuildContext context) {
+    return isAuth ? buildAuthScreen() : buildUnAuthScreen();
+  }
+
   Widget buildAuthScreen() {
     return Scaffold(
       body: PageView(
@@ -111,11 +116,6 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return isAuth ? buildAuthScreen() : buildUnAuthScreen();
   }
 
   void buttonDown(_) {
