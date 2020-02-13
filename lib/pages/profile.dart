@@ -10,6 +10,11 @@ import 'package:getoutfit_stylist/widgets/look_tile.dart';
 import 'package:getoutfit_stylist/widgets/look_widget.dart';
 import 'package:getoutfit_stylist/widgets/progress.dart';
 
+enum LookOrientation {
+  grid,
+  list,
+}
+
 class Profile extends StatefulWidget {
   final String profileId;
 
@@ -23,6 +28,7 @@ class _ProfileState extends State<Profile> {
   final String currentUserId = currentUser?.id;
   bool isLoading = false;
   int lookCount = 0;
+  LookOrientation lookOrientation = LookOrientation.grid;
   List<LookWidget> looks = [];
 
   @override
@@ -33,6 +39,8 @@ class _ProfileState extends State<Profile> {
         child: ListView(
           children: <Widget>[
             buildProfileHeader(),
+            Divider(),
+            buildToggleListOrientation(),
             Divider(height: 0),
             buildProfileLooks(),
           ],
@@ -181,23 +189,51 @@ class _ProfileState extends State<Profile> {
 
   Widget buildProfileLooks() {
     if (isLoading) return circularProgress(context);
-    final List<GridTile> gridTiles = looks
-        .map(
-          (lookWidget) => GridTile(
-            child: LookTile(lookWidget.look),
-          ),
-        )
-        .toList();
-    return GridView.count(
-      childAspectRatio: 1,
-      children: gridTiles,
-      crossAxisCount: 3,
-      crossAxisSpacing: 1.5,
-      mainAxisSpacing: 1.5,
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
+    switch (lookOrientation) {
+      case LookOrientation.grid:
+        final List<GridTile> gridTiles = looks
+            .map(
+              (lookWidget) => GridTile(
+                child: LookTile(lookWidget.look),
+              ),
+            )
+            .toList();
+        return GridView.count(
+          childAspectRatio: 1,
+          children: gridTiles,
+          crossAxisCount: 3,
+          crossAxisSpacing: 1.5,
+          mainAxisSpacing: 1.5,
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+        );
+      case LookOrientation.list:
+        return Column(children: looks);
+    }
+    return null; // Should never get here
+  }
+
+  Widget buildToggleListOrientation() {
+    final Color primaryColor = Theme.of(context).primaryColor;
+    return Row(
+      children: <Widget>[
+        IconButton(
+          color: lookOrientation == LookOrientation.grid
+              ? primaryColor
+              : Colors.grey,
+          icon: Icon(Icons.grid_on),
+          onPressed: setGridOrientation,
+        ),
+        IconButton(
+          color: lookOrientation == LookOrientation.list
+              ? primaryColor
+              : Colors.grey,
+          icon: Icon(Icons.list),
+          onPressed: setListOrientation,
+        ),
+      ],
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     );
-    return Column(children: looks);
   }
 
   @override
@@ -231,5 +267,13 @@ class _ProfileState extends State<Profile> {
           )
           .toList();
     });
+  }
+
+  void setGridOrientation() => setLookOrientation(LookOrientation.grid);
+
+  void setListOrientation() => setLookOrientation(LookOrientation.list);
+
+  void setLookOrientation(LookOrientation lookOrientation) {
+    setState(() => this.lookOrientation = lookOrientation);
   }
 }
