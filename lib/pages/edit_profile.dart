@@ -17,8 +17,13 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final TextEditingController bioController = TextEditingController();
   final TextEditingController displayNameController = TextEditingController();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   bool isLoading = false;
   User user;
+
+  String bioValidator(String text) {
+    return 100 < text.trim().length ? 'Bio is too long' : null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +36,17 @@ class _EditProfileState extends State<EditProfile> {
               color: Theme.of(context).accentColor,
               size: 30,
             ),
-            onPressed: () => Navigator.pop(context),
-          )
+            onPressed: updateProfileData,
+          ),
         ],
         backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(
+            Icons.close,
+            color: Colors.grey,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(
           'Edit Profile',
           style: TextStyle(
@@ -66,10 +78,12 @@ class _EditProfileState extends State<EditProfile> {
                             buildField(
                               'Display Name',
                               controller: displayNameController,
+                              validator: displayNameValidator,
                             ),
                             buildField(
                               'Bio',
                               controller: bioController,
+                              validator: bioValidator,
                             )
                           ],
                         ),
@@ -85,7 +99,7 @@ class _EditProfileState extends State<EditProfile> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () => print('Update profile data'),
+                        onPressed: updateProfileData,
                       ),
                       Padding(
                         child: FlatButton.icon(
@@ -112,10 +126,15 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ],
             ),
+      key: scaffoldKey,
     );
   }
 
-  Column buildField(String text, {TextEditingController controller}) {
+  Column buildField(
+    String text, {
+    TextEditingController controller,
+    String Function(String) validator,
+  }) {
     return Column(
       children: <Widget>[
         Padding(
@@ -125,13 +144,19 @@ class _EditProfileState extends State<EditProfile> {
           ),
           padding: EdgeInsets.only(top: 12),
         ),
-        TextField(
+        TextFormField(
+          autovalidate: true,
           controller: controller,
           decoration: InputDecoration(hintText: 'Update $text'),
+          validator: validator,
         ),
       ],
       crossAxisAlignment: CrossAxisAlignment.start,
     );
+  }
+
+  String displayNameValidator(String text) {
+    return text.trim().length < 3 ? 'Display name is too short' : null;
   }
 
   void getUser() async {
@@ -153,5 +178,37 @@ class _EditProfileState extends State<EditProfile> {
   void initState() {
     super.initState();
     getUser();
+  }
+
+  void updateProfileData() async {
+    final bool bioValid = bioValidator(bioController.text) == null;
+    final bool displayNameValid =
+        displayNameValidator(displayNameController.text) == null;
+    Color snackBarBackgroundColor = Theme.of(context).accentColor;
+    Color snackBarTextColor = Colors.white;
+    String snackBarText = 'Profile updated';
+    if (bioValid && displayNameValid) {
+      usersRef.document(widget.currentUserId).updateData({
+        'displayName': displayNameController.text.trim(),
+        'bio': bioController.text.trim(),
+      }).catchError((error) {
+        snackBarBackgroundColor = Colors.red;
+        snackBarTextColor = Colors.yellow;
+        snackBarText = 'ERROR updating user profile';
+        print('$snackBarText $error');
+      });
+      final SnackBar snackBar = SnackBar(
+        backgroundColor: snackBarBackgroundColor,
+        content: Text(
+          snackBarText,
+          style: TextStyle(color: snackBarTextColor),
+        ),
+        duration: Duration(milliseconds: 1500),
+      );
+      final ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
+          controller = scaffoldKey.currentState.showSnackBar(snackBar);
+      await controller.closed;
+      Navigator.pop(context);
+    }
   }
 }
