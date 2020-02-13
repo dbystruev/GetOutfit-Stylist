@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/user.dart';
+import 'package:getoutfit_stylist/pages/edit_profile.dart';
+import 'package:getoutfit_stylist/pages/home.dart';
 import 'package:getoutfit_stylist/widgets/header.dart';
 import 'package:getoutfit_stylist/widgets/progress.dart';
 
@@ -15,15 +17,47 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final String currentUserId = currentUser?.id;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: header(context, titleText: "Profile"),
-      body: ListView(
-        children: <Widget>[
-          buildProfileHeader(),
-        ],
+      body: SafeArea(
+        child: ListView(
+          children: <Widget>[
+            buildProfileHeader(),
+          ],
+        ),
       ),
+    );
+  }
+
+  Container buildButton({String text, Function onPressed}) {
+    return Container(
+      child: FlatButton(
+        child: Container(
+          alignment: Alignment.center,
+          child: Text(
+            text,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).primaryColor,
+            ),
+            borderRadius: BorderRadius.circular(5),
+            color: Theme.of(context).primaryColor,
+          ),
+          height: 27,
+          width: 250,
+        ),
+        onPressed: onPressed,
+      ),
+      padding: EdgeInsets.only(top: 2),
     );
   }
 
@@ -55,6 +89,13 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget buildProfileButton() {
+    // if own profile — show edit profile button
+    final bool isProfileOwner = currentUserId == widget.profileId;
+    if (isProfileOwner)
+      return buildButton(
+        onPressed: editProfile,
+        text: "Edit Profile",
+      );
     return Text('Profile Button');
   }
 
@@ -78,7 +119,7 @@ class _ProfileState extends State<Profile> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            buildCountColumn('posts', 0),
+                            buildCountColumn('looks', 0),
                             buildCountColumn('followers', 0),
                             buildCountColumn('following', 0),
                           ],
@@ -127,6 +168,15 @@ class _ProfileState extends State<Profile> {
         );
       },
       future: usersRef.document(widget.profileId).get(),
+    );
+  }
+
+  void editProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProfile(currentUserId: currentUserId),
+      ),
     );
   }
 }
