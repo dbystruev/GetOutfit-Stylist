@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/look.dart';
 import 'package:getoutfit_stylist/models/user.dart';
+import 'package:getoutfit_stylist/pages/home.dart';
 import 'package:getoutfit_stylist/widgets/custom_image.dart';
 import 'package:getoutfit_stylist/widgets/progress.dart';
 
@@ -23,12 +24,15 @@ class LookWidget extends StatefulWidget {
 }
 
 class _LookWidgetState extends State<LookWidget> {
+  final String currentUserId = currentUser?.id;
+  bool isLiked;
   Look look;
 
   _LookWidgetState(this.look);
 
   @override
   Widget build(BuildContext context) {
+    isLiked = look.likes[currentUserId] ?? false;
     return Column(
       children: <Widget>[
         buildLookHeader(),
@@ -39,7 +43,7 @@ class _LookWidgetState extends State<LookWidget> {
     );
   }
 
-  Column buildLookFooter() {
+  Widget buildLookFooter() {
     return Column(
       children: <Widget>[
         Row(
@@ -49,11 +53,11 @@ class _LookWidgetState extends State<LookWidget> {
             ),
             GestureDetector(
               child: Icon(
-                Icons.favorite_border,
+                isLiked ? Icons.favorite : Icons.favorite_border,
                 color: Colors.pink,
                 size: 28,
               ),
-              onTap: () => print('Like the look'),
+              onTap: handleLikeLook,
             ),
             SizedBox(width: 20),
             GestureDetector(
@@ -100,7 +104,7 @@ class _LookWidgetState extends State<LookWidget> {
     );
   }
 
-  FutureBuilder buildLookHeader() {
+  Widget buildLookHeader() {
     return FutureBuilder(
       builder: (context, snapshot) {
         if (!snapshot.hasData) return circularProgress(context);
@@ -131,7 +135,7 @@ class _LookWidgetState extends State<LookWidget> {
     );
   }
 
-  GestureDetector buildLookImage() {
+  Widget buildLookImage() {
     return GestureDetector(
       child: Stack(
         alignment: Alignment.center,
@@ -139,7 +143,20 @@ class _LookWidgetState extends State<LookWidget> {
           cachedNetworkImage(look.mediaUrl),
         ],
       ),
-      onDoubleTap: () => print('Like the Look'),
+      onDoubleTap: handleLikeLook,
     );
+  }
+
+  void handleLikeLook() {
+    final bool previouslyLiked = look.likes[currentUserId] ?? false;
+    looksRef
+        .document(look.ownerId)
+        .collection('userLooks')
+        .document(look.lookId)
+        .updateData({'likes.$currentUserId': !previouslyLiked});
+        setState(() {
+          isLiked = !previouslyLiked;
+          look.likes[currentUserId] = isLiked;
+        });
   }
 }
