@@ -6,7 +6,8 @@ import 'package:getoutfit_stylist/models/user.dart';
 import 'package:getoutfit_stylist/pages/edit_profile.dart';
 import 'package:getoutfit_stylist/pages/home.dart';
 import 'package:getoutfit_stylist/widgets/header.dart';
-import 'package:getoutfit_stylist/widgets/lookWidget.dart';
+import 'package:getoutfit_stylist/widgets/look_tile.dart';
+import 'package:getoutfit_stylist/widgets/look_widget.dart';
 import 'package:getoutfit_stylist/widgets/progress.dart';
 
 class Profile extends StatefulWidget {
@@ -180,6 +181,22 @@ class _ProfileState extends State<Profile> {
 
   Widget buildProfileLooks() {
     if (isLoading) return circularProgress(context);
+    final List<GridTile> gridTiles = looks
+        .map(
+          (lookWidget) => GridTile(
+            child: LookTile(lookWidget.look),
+          ),
+        )
+        .toList();
+    return GridView.count(
+      childAspectRatio: 1,
+      children: gridTiles,
+      crossAxisCount: 3,
+      crossAxisSpacing: 1.5,
+      mainAxisSpacing: 1.5,
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+    );
     return Column(children: looks);
   }
 

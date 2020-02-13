@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/look.dart';
 import 'package:getoutfit_stylist/models/user.dart';
+import 'package:getoutfit_stylist/widgets/custom_image.dart';
 import 'package:getoutfit_stylist/widgets/progress.dart';
 
 class LookWidget extends StatefulWidget {
@@ -135,7 +136,7 @@ class _LookWidgetState extends State<LookWidget> {
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          Image.network(look.mediaUrl),
+          cachedNetworkImage(look.mediaUrl),
         ],
       ),
       onDoubleTap: () => print('Like the Look'),
