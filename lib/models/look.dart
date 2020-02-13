@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Look {
   final String description;
-  final Map<String, bool> likes;
+  final dynamic likes;
   final String location;
   final String lookId;
   final String mediaUrl;

@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/user.dart';
 import 'package:getoutfit_stylist/pages/edit_profile.dart';
 import 'package:getoutfit_stylist/pages/home.dart';
 import 'package:getoutfit_stylist/widgets/header.dart';
+import 'package:getoutfit_stylist/widgets/lookWidget.dart';
 import 'package:getoutfit_stylist/widgets/progress.dart';
 
 class Profile extends StatefulWidget {
@@ -18,6 +20,9 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final String currentUserId = currentUser?.id;
+  bool isLoading = false;
+  int lookCount = 0;
+  List<LookWidget> looks = [];
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +32,8 @@ class _ProfileState extends State<Profile> {
         child: ListView(
           children: <Widget>[
             buildProfileHeader(),
+            Divider(height: 0),
+            buildProfileLooks(),
           ],
         ),
       ),
@@ -119,7 +126,7 @@ class _ProfileState extends State<Profile> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            buildCountColumn('looks', 0),
+                            buildCountColumn('looks', lookCount),
                             buildCountColumn('followers', 0),
                             buildCountColumn('following', 0),
                           ],
@@ -171,6 +178,17 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Widget buildProfileLooks() {
+    if (isLoading) return circularProgress(context);
+    return Column(children: looks);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getProfileLooks();
+  }
+
   void editProfile() {
     Navigator.push(
       context,
@@ -178,5 +196,23 @@ class _ProfileState extends State<Profile> {
         builder: (context) => EditProfile(currentUserId: currentUserId),
       ),
     );
+  }
+
+  void getProfileLooks() async {
+    setState(() => isLoading = true);
+    final QuerySnapshot snapshot = await looksRef
+        .document(widget.profileId)
+        .collection('userLooks')
+        .orderBy('timestamp', descending: true)
+        .getDocuments();
+    setState(() {
+      isLoading = false;
+      lookCount = snapshot.documents.length;
+      looks = snapshot.documents
+          .map(
+            (doc) => LookWidget.fromDocument(doc),
+          )
+          .toList();
+    });
   }
 }
