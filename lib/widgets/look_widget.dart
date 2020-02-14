@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +30,7 @@ class _LookWidgetState extends State<LookWidget> {
   final String currentUserId = currentUser?.id;
   bool isLiked;
   Look look;
+  bool showHeart = false;
 
   _LookWidgetState(this.look);
 
@@ -141,6 +145,22 @@ class _LookWidgetState extends State<LookWidget> {
         alignment: Alignment.center,
         children: <Widget>[
           cachedNetworkImage(look.mediaUrl),
+          showHeart
+              ? Animator(
+                  builder: (animation) => Transform.scale(
+                    child: Icon(
+                      Icons.favorite,
+                      color: Colors.pink,
+                      size: 80,
+                    ),
+                    scale: animation.value,
+                  ),
+                  curve: Curves.elasticOut,
+                  cycles: 0,
+                  duration: Duration(milliseconds: 300),
+                  tween: Tween(begin: 0.8, end: 1.4),
+                )
+              : Container(),
         ],
       ),
       onDoubleTap: handleLikeLook,
@@ -154,9 +174,14 @@ class _LookWidgetState extends State<LookWidget> {
         .collection('userLooks')
         .document(look.lookId)
         .updateData({'likes.$currentUserId': !previouslyLiked});
-        setState(() {
-          isLiked = !previouslyLiked;
-          look.likes[currentUserId] = isLiked;
-        });
+    setState(() {
+      isLiked = !previouslyLiked;
+      look.likes[currentUserId] = isLiked;
+      if (isLiked) showHeart = true;
+    });
+    if (showHeart)
+      Timer(Duration(milliseconds: 500), () {
+        setState(() => showHeart = false);
+      });
   }
 }
