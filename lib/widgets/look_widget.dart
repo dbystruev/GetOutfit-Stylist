@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/look.dart';
 import 'package:getoutfit_stylist/models/user.dart';
+import 'package:getoutfit_stylist/pages/comments.dart';
 import 'package:getoutfit_stylist/pages/home.dart';
 import 'package:getoutfit_stylist/widgets/custom_image.dart';
 import 'package:getoutfit_stylist/widgets/progress.dart';
@@ -70,7 +71,12 @@ class _LookWidgetState extends State<LookWidget> {
                 color: Theme.of(context).accentColor,
                 size: 28,
               ),
-              onTap: () => print('Show comments'),
+              onTap: () => showComments(
+                context,
+                lookId: look.lookId,
+                ownerId: look.ownerId,
+                mediaUrl: look.mediaUrl,
+              ),
             ),
           ],
           mainAxisAlignment: MainAxisAlignment.start,
@@ -183,5 +189,23 @@ class _LookWidgetState extends State<LookWidget> {
       Timer(Duration(milliseconds: 500), () {
         setState(() => showHeart = false);
       });
+  }
+
+  void showComments(
+    BuildContext context, {
+    String lookId,
+    String ownerId,
+    String mediaUrl,
+  }) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        return Comments(
+          lookId: lookId,
+          lookOwnerId: ownerId,
+          lookMediaUrl: mediaUrl,
+        );
+      }),
+    );
   }
 }
