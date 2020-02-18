@@ -206,6 +206,7 @@ class _UploadState extends State<Upload> {
         .collection('userLooks')
         .document(lookId)
         .setData({
+      'commentCount': 0,
       'description': description,
       'likes': {},
       'location': location,

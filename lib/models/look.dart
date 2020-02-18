@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Look {
+  final int commentCount;
   final String description;
   final dynamic likes;
   final String location;
@@ -10,6 +11,7 @@ class Look {
   final String username;
 
   Look({
+    this.commentCount,
     this.description,
     this.likes,
     this.location,
@@ -21,6 +23,7 @@ class Look {
 
   factory Look.fromDocument(DocumentSnapshot doc) {
     return Look(
+      commentCount: doc['commentCount'] ?? 0,
       description: doc['description'],
       likes: doc['likes'],
       location: doc['location'],

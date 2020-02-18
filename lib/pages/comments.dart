@@ -46,7 +46,14 @@ class _CommentsState extends State<Comments> {
       'timestamp': timestamp,
       'userId': currentUser.id,
       'username': currentUser.username,
+    }).then((doc) async {
+      // TODO: Change to cloud function
+      final int commentCount = await doc.parent().snapshots().length;
+      print('Number of comments: $commentCount');
+    }).catchError((error) {
+      print('ERROR adding comment: $error');
     });
+    
     commentController.clear();
   }
 

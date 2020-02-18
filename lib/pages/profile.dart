@@ -264,12 +264,6 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getProfileLooks();
-  }
-
   void editProfile() {
     Navigator.push(
       context,
@@ -295,6 +289,12 @@ class _ProfileState extends State<Profile> {
           )
           .toList();
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getProfileLooks();
   }
 
   void setGridOrientation() => setLookOrientation(LookOrientation.grid);

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -43,6 +44,7 @@ class _LookWidgetState extends State<LookWidget> {
         buildLookHeader(),
         buildLookImage(),
         buildLookFooter(),
+        Divider(thickness: 2),
       ],
       mainAxisSize: MainAxisSize.min,
     );
@@ -56,43 +58,53 @@ class _LookWidgetState extends State<LookWidget> {
             Padding(
               padding: EdgeInsets.only(left: 20, top: 40),
             ),
-            GestureDetector(
-              child: Icon(
-                isLiked ? Icons.favorite : Icons.favorite_border,
-                color: Colors.pink,
-                size: 28,
-              ),
-              onTap: handleLikeLook,
+            Column(
+              children: <Widget>[
+                GestureDetector(
+                  child: Icon(
+                    isLiked ? Icons.favorite : Icons.favorite_border,
+                    color: Colors.pink,
+                    size: 28,
+                  ),
+                  onTap: handleLikeLook,
+                ),
+                Text(
+                  '${look.likeCount} like${look.likeCount == 1 ? '' : 's'}',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
             SizedBox(width: 20),
-            GestureDetector(
-              child: Icon(
-                Icons.chat,
-                color: Theme.of(context).accentColor,
-                size: 28,
-              ),
-              onTap: () => showComments(
-                context,
-                lookId: look.lookId,
-                ownerId: look.ownerId,
-                mediaUrl: look.mediaUrl,
-              ),
+            Column(
+              children: <Widget>[
+                GestureDetector(
+                  child: Icon(
+                    Icons.chat,
+                    color: Theme.of(context).accentColor,
+                    size: 28,
+                  ),
+                  onTap: () => showComments(
+                    context,
+                    lookId: look.lookId,
+                    ownerId: look.ownerId,
+                    mediaUrl: look.mediaUrl,
+                  ),
+                ),
+                Text(
+                  '0 comments',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ],
             ),
           ],
           mainAxisAlignment: MainAxisAlignment.start,
         ),
-        Row(
-          children: <Widget>[
-            SizedBox(width: 20),
-            Text(
-              '${look.likeCount} like${look.likeCount == 1 ? '' : 's'}',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
+        SizedBox(height: 4),
         Row(
           children: <Widget>[
             SizedBox(width: 20),

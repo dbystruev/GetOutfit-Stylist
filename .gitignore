@@ -42,3 +42,13 @@ GoogleService-Info.plist
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+# functions/.gitignore
+## Compiled JavaScript files
+**/*.js
+**/*.js.map
+
+# Typescript v1 declaration files
+typings/
+
+node_modules/
