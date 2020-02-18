@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,12 +27,15 @@ class LookWidget extends StatefulWidget {
 }
 
 class _LookWidgetState extends State<LookWidget> {
+  int commentCount;
   final String currentUserId = currentUser?.id;
   bool isLiked;
   Look look;
   bool showHeart = false;
 
-  _LookWidgetState(this.look);
+  _LookWidgetState(this.look) {
+    commentCount = look.commentCount;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +95,7 @@ class _LookWidgetState extends State<LookWidget> {
                   ),
                 ),
                 Text(
-                  '0 comments',
+                  '$commentCount comment${commentCount == 1 ? '' : 's'}',
                   style: TextStyle(
                     color: Colors.black,
                   ),
@@ -208,16 +209,20 @@ class _LookWidgetState extends State<LookWidget> {
     String lookId,
     String ownerId,
     String mediaUrl,
-  }) {
-    Navigator.push(
+  }) async {
+    final int newCommentCount = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) {
         return Comments(
+          commentCount: commentCount,
           lookId: lookId,
           lookOwnerId: ownerId,
           lookMediaUrl: mediaUrl,
         );
       }),
     );
+    if (commentCount!= newCommentCount) setState(() {
+      commentCount = newCommentCount;
+    });
   }
 }

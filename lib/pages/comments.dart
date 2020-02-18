@@ -8,11 +8,13 @@ import 'package:getoutfit_stylist/widgets/progress.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class Comments extends StatefulWidget {
+  final int commentCount;
   final String lookId;
   final String lookOwnerId;
   final String lookMediaUrl;
 
   Comments({
+    this.commentCount,
     this.lookId,
     this.lookOwnerId,
     this.lookMediaUrl,
@@ -20,6 +22,7 @@ class Comments extends StatefulWidget {
 
   @override
   _CommentsState createState() => _CommentsState(
+        commentCount: commentCount,
         lookId: lookId,
         lookOwnerId: lookOwnerId,
         lookMediaUrl: lookMediaUrl,
@@ -28,12 +31,14 @@ class Comments extends StatefulWidget {
 
 class _CommentsState extends State<Comments> {
   final TextEditingController commentController = TextEditingController();
+  int commentCount;
   final String lookId;
   final String lookOwnerId;
   final String lookMediaUrl;
   bool noComment = true;
 
   _CommentsState({
+    this.commentCount,
     this.lookId,
     this.lookOwnerId,
     this.lookMediaUrl,
@@ -47,13 +52,20 @@ class _CommentsState extends State<Comments> {
       'userId': currentUser.id,
       'username': currentUser.username,
     }).then((doc) async {
-      // TODO: Change to cloud function
-      final int commentCount = await doc.parent().snapshots().length;
-      print('Number of comments: $commentCount');
+      // TO DO: Comment counter — change to cloud function
+      final CollectionReference commentsCollection = doc.parent();
+      final String lookId = commentsCollection.parent().documentID;
+      final QuerySnapshot comments = await commentsCollection.getDocuments();
+      commentCount = comments.documents.length;
+      looksRef.document(lookOwnerId).collection('userLooks').document(lookId).updateData({
+        'commentCount': commentCount
+      }).catchError((error) {
+        print('ERROR updating commentCount to $commentCount in /looks/$lookOwnerId/userLooks/$lookId: $error');
+      });
     }).catchError((error) {
       print('ERROR adding comment: $error');
     });
-    
+
     commentController.clear();
   }
 
@@ -61,7 +73,9 @@ class _CommentsState extends State<Comments> {
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
-        appBar: header(context, titleText: 'Comments'),
+        appBar: header(context, leading: BackButton(onPressed: () {
+          Navigator.maybePop(context, commentCount);
+        }), titleText: 'Comments'),
         body: SafeArea(
           child: Column(
             children: <Widget>[

@@ -11,8 +11,8 @@ import 'package:getoutfit_stylist/pages/timeline.dart';
 import 'package:getoutfit_stylist/pages/upload.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-final DateTime timestamp = DateTime.now();
 User currentUser;
+DateTime get timestamp => DateTime.now();
 
 class Home extends StatefulWidget {
   @override

@@ -25,7 +25,7 @@ class Look {
     return Look(
       commentCount: doc['commentCount'] ?? 0,
       description: doc['description'],
-      likes: doc['likes'],
+      likes: doc['likes'] ?? [],
       location: doc['location'],
       lookId: doc['lookId'],
       mediaUrl: doc['mediaUrl'],
