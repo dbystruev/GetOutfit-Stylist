@@ -8,6 +8,7 @@ import 'package:getoutfit_stylist/models/look.dart';
 import 'package:getoutfit_stylist/models/user.dart';
 import 'package:getoutfit_stylist/pages/comments.dart';
 import 'package:getoutfit_stylist/pages/home.dart';
+import 'package:getoutfit_stylist/utilities/plural.dart';
 import 'package:getoutfit_stylist/widgets/custom_image.dart';
 import 'package:getoutfit_stylist/widgets/progress.dart';
 
@@ -70,7 +71,7 @@ class _LookWidgetState extends State<LookWidget> {
                   onTap: handleLikeLook,
                 ),
                 Text(
-                  '${look.likeCount} like${look.likeCount == 1 ? '' : 's'}',
+                  pluralize(look.likeCount, 'like'),
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -95,7 +96,7 @@ class _LookWidgetState extends State<LookWidget> {
                   ),
                 ),
                 Text(
-                  '$commentCount comment${commentCount == 1 ? '' : 's'}',
+                  pluralize(commentCount, 'comment'),
                   style: TextStyle(
                     color: Colors.black,
                   ),
