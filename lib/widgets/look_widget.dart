@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/look.dart';
 import 'package:getoutfit_stylist/models/user.dart';
+import 'package:getoutfit_stylist/pages/activity_feed.dart';
 import 'package:getoutfit_stylist/pages/comments.dart';
 import 'package:getoutfit_stylist/pages/home.dart';
 import 'package:getoutfit_stylist/utilities/plural.dart';
@@ -36,6 +37,27 @@ class _LookWidgetState extends State<LookWidget> {
 
   _LookWidgetState(this.look) {
     commentCount = look.commentCount;
+  }
+
+  void addLikeToActivityFeed() {
+    // Don't track likes of own posts
+    if (currentUserId == look.ownerId) return;
+    activityFeedRef
+        .document(look.ownerId)
+        .collection('feedItems')
+        .document(look.lookId)
+        .setData({
+      'lookId': look.lookId,
+      'mediaUrl': look.mediaUrl,
+      'timestamp': timestamp,
+      'type': ActivityType.like.toString(),
+      'userId': currentUserId,
+      'username': currentUser.username,
+      'userProfileImg': currentUser.photoUrl,
+    }).catchError((error) {
+      final String path = '/feed/${look.ownerId}/feedItems/${look.lookId}';
+      print('ERROR adding $path: $error');
+    });
   }
 
   @override
@@ -194,6 +216,10 @@ class _LookWidgetState extends State<LookWidget> {
         .collection('userLooks')
         .document(look.lookId)
         .updateData({'likes.$currentUserId': !previouslyLiked});
+    if (previouslyLiked)
+      removeLikeFromActivityFeed();
+    else
+      addLikeToActivityFeed();
     setState(() {
       isLiked = !previouslyLiked;
       look.likes[currentUserId] = isLiked;
@@ -203,6 +229,18 @@ class _LookWidgetState extends State<LookWidget> {
       Timer(Duration(milliseconds: 500), () {
         setState(() => showHeart = false);
       });
+  }
+
+  void removeLikeFromActivityFeed() {
+    activityFeedRef
+        .document(look.ownerId)
+        .collection('feedItems')
+        .document(look.lookId)
+        .delete()
+        .catchError((error) {
+      final String path = '/feed/${look.ownerId}/feedItems/${look.lookId}';
+      print('ERROR deleting $path: $error');
+    });
   }
 
   void showComments(
@@ -222,8 +260,9 @@ class _LookWidgetState extends State<LookWidget> {
         );
       }),
     );
-    if (commentCount!= newCommentCount) setState(() {
-      commentCount = newCommentCount;
-    });
+    if (commentCount != newCommentCount)
+      setState(() {
+        commentCount = newCommentCount;
+      });
   }
 }

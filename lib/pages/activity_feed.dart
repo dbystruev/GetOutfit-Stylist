@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/widgets/progress.dart';
 
+enum ActivityType {
+  comment,
+  follow,
+  like,
+}
+
 class ActivityFeed extends StatefulWidget {
   @override
   _ActivityFeedState createState() => _ActivityFeedState();
