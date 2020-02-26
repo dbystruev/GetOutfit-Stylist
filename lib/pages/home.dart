@@ -30,7 +30,9 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return isAuth ? buildAuthScreen() : buildUnAuthScreen();
+    return isAuth && currentUser != null
+        ? buildAuthScreen()
+        : buildUnAuthScreen();
   }
 
   Widget buildAuthScreen() {
@@ -125,25 +127,31 @@ class _HomeState extends State<Home> {
   }
 
   void buttonUp([tapUpDetails]) {
-    setState(() {
+    setState(() async {
       isButtonPressed = false;
-      if (tapUpDetails != null) login();
+      if (tapUpDetails != null) {
+        final result = await login();
+        if (result.isNotEmpty) print('ERROR: $result');
+      }
     });
   }
 
-  void createUserInFirestore() async {
+  // Returns error message or empty string if no errors
+  Future<String> createUserInFirestore() async {
     // 1) Check if user exists in Firestore's users collection
     final GoogleSignInAccount user = googleSignIn.currentUser;
 
     if (user == null) {
-      print('ERROR: Current user is null in createUserInFirestore()');
-      return;
+      final String error = 'current user is null';
+      print('ERROR: $error in createUserInFirestore()');
+      return error;
     }
 
     DocumentSnapshot doc =
         await usersRef.document(user.id).get().catchError((error) {
-      print('ERROR: Can\'t get user\'s document in createUserInFirestore()');
-      return;
+      print(
+          'ERROR: Can\'t get user\'s document in createUserInFirestore() due to $error');
+      return '$error';
     });
 
     if (!doc.exists) {
@@ -166,20 +174,20 @@ class _HomeState extends State<Home> {
         'timestamp': timestamp,
         'username': username,
       }).catchError((error) {
-        print('ERROR: Can\'t add user to Firestore in createUserInFirestore()');
-        return;
+        print(
+            'ERROR: Can\'t add user to Firestore in createUserInFirestore() due to $error');
+        return '$error';
       });
 
       doc = await usersRef.document(user.id).get().catchError((error) {
         print(
-            'ERROR: Can\'t get user back from Firestore in createUserInFirestore()');
-        return;
+            'ERROR: Can\'t get user back from Firestore in createUserInFirestore() due to $error');
+        return '$error';
       });
     }
 
     currentUser = User.fromDocument(doc);
-    print(
-        'Current User: ${currentUser.username} (${currentUser.displayName}) ${currentUser.email}');
+    return '';
   }
 
   @override
@@ -188,10 +196,10 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
-  void handleSignIn(GoogleSignInAccount account) {
-    if (account != null) {
-      createUserInFirestore();
-      setState(() => isAuth = true);
+  void handleSignIn(GoogleSignInAccount account) async {
+    if (account?.id != null) {
+      final String errorMessage = await createUserInFirestore();
+      setState(() => isAuth = errorMessage.isEmpty);
     } else {
       setState(() => isAuth = false);
     }

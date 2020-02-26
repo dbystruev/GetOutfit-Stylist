@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/user.dart';
@@ -64,8 +65,12 @@ class _EditProfileState extends State<EditProfile> {
                       children: <Widget>[
                         Padding(
                           child: CircleAvatar(
-                            backgroundImage:
-                                CachedNetworkImageProvider(user.photoUrl),
+                            backgroundImage: kIsWeb
+                                ? NetworkImage(
+                                    user.photoUrl,
+                                    scale: 1,
+                                  )
+                                : CachedNetworkImageProvider(user.photoUrl),
                             radius: 50,
                           ),
                           padding: EdgeInsets.only(

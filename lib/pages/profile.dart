@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/user.dart';
 import 'package:getoutfit_stylist/pages/edit_profile.dart';
@@ -128,7 +128,12 @@ class _ProfileState extends State<Profile> {
                 children: <Widget>[
                   CircleAvatar(
                     backgroundColor: Colors.grey,
-                    backgroundImage: CachedNetworkImageProvider(user.photoUrl),
+                    backgroundImage: kIsWeb
+                        ? NetworkImage(
+                            user.photoUrl,
+                            scale: 1,
+                          )
+                        : CachedNetworkImageProvider(user.photoUrl),
                     radius: 40,
                   ),
                   Expanded(
@@ -197,7 +202,7 @@ class _ProfileState extends State<Profile> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(left: 40),
-              child: SvgPicture.asset(
+              child: Image.asset(
                 'assets/images/no_content.svg',
                 height: orientation == Orientation.portrait ? 300 : 200,
               ),
@@ -280,14 +285,15 @@ class _ProfileState extends State<Profile> {
         .collection('userLooks')
         .orderBy('timestamp', descending: true)
         .getDocuments();
+
+    lookCount = snapshot.documents.length;
+    looks = snapshot.documents
+        .map(
+          (doc) => LookWidget.fromDocument(doc),
+        )
+        .toList();
     setState(() {
       isLoading = false;
-      lookCount = snapshot.documents.length;
-      looks = snapshot.documents
-          .map(
-            (doc) => LookWidget.fromDocument(doc),
-          )
-          .toList();
     });
   }
 

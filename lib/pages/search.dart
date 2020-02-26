@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/user.dart';
 import 'package:getoutfit_stylist/widgets/progress.dart';
@@ -33,7 +33,7 @@ class _SearchState extends State<Search> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(left: 70),
-              child: SvgPicture.asset(
+              child: Image.asset(
                 'assets/images/search.svg',
                 height: orientation == Orientation.portrait ? 300 : 200,
               ),
@@ -136,7 +136,12 @@ class UserResult extends StatelessWidget {
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: Colors.grey,
-              backgroundImage: CachedNetworkImageProvider(user.photoUrl),
+              backgroundImage: kIsWeb
+                  ? NetworkImage(
+                      user.photoUrl,
+                      scale: 1,
+                    )
+                  : CachedNetworkImageProvider(user.photoUrl),
             ),
             subtitle: Text(
               user.username,

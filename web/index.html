@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+  <meta name="google-signin-client_id" content="195658674761-8qrovnekr5llb76bhm2gngau0d78f46v.apps.googleusercontent.com" />
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="getoutfit_stylist_air">
+  <link rel="apple-touch-icon" href="/icons/Icon-192.png">
+
+  <title>getoutfit_stylist_air</title>
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+  <!-- This script installs service_worker.js to provide PWA functionality to
+       application. For more information, see:
+       https://developers.google.com/web/fundamentals/primers/service-workers -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/flutter_service_worker.js');
+      });
+    }
+  </script>
+
+  <!-- Add the entire Firebase JavaScript SDK -->
+  <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase.js"></script>
+
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <!-- <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-app.js"></script>  -->
+
+  <!-- TODO: Add SDKs for Firebase products that we want to use
+       https://firebase.google.com/docs/web/setup#available-libraries -->
+  <!-- <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-functions.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-messaging.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-storage.js"></script>  -->
+
+  <script>
+    // Web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyAK2nB6nfLVMTnYFES9SKtcGS5ovv10dNE",
+      authDomain: "getoutfit-stylist.firebaseapp.com",
+      databaseURL: "https://getoutfit-stylist.firebaseio.com",
+      projectId: "getoutfit-stylist",
+      storageBucket: "getoutfit-stylist.appspot.com",
+      messagingSenderId: "195658674761",
+      appId: "1:195658674761:web:956805850b2be368e70598",
+      measurementId: "G-BTJTYSK11Z"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
+  <script src="main.dart.js" type="application/javascript"></script>
+</body>
+</html>

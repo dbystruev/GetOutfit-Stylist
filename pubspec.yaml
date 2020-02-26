@@ -16,18 +16,25 @@ version: 1.0.0+1
 environment:
   sdk: ">=2.2.2 <3.0.0"
 
-# updated 4 Feb 2020
 dependencies:
+  # https://medium.com/flutter-community/loading-image-from-firebase-storage-in-flutter-app-android-ios-web-1951607ec9ef
+  # accessing Firebase Storage for native apps
+  firebase_analytics: ^5.0.11
+  firebase_core: ^0.4.4
+  firebase_storage: ^3.1.1
+
+  # accessing Firebase Storage for web apps
+  firebase: ^7.2.1
+  
+  # other dependencies
   animator: 1.0.0+3
   auto_size_text: ^2.1.0
   cached_network_image: ^2.0.0
-  cloud_firestore: ^0.13.0+1
+  cloud_firestore: ^0.13.3
   firebase_auth: ^0.15.4
   firebase_messaging: ^6.0.9
-  firebase_storage: ^3.1.1
   flutter:
     sdk: flutter
-  flutter_svg: ^0.17.1
   geolocator: ^5.2.1
   google_sign_in: ^4.1.1
   image: ^2.1.4 # 2.1.12

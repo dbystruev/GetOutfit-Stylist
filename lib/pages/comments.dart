@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/pages/home.dart';
@@ -57,10 +58,13 @@ class _CommentsState extends State<Comments> {
       final String lookId = commentsCollection.parent().documentID;
       final QuerySnapshot comments = await commentsCollection.getDocuments();
       commentCount = comments.documents.length;
-      looksRef.document(lookOwnerId).collection('userLooks').document(lookId).updateData({
-        'commentCount': commentCount
-      }).catchError((error) {
-        print('ERROR updating commentCount to $commentCount in /looks/$lookOwnerId/userLooks/$lookId: $error');
+      looksRef
+          .document(lookOwnerId)
+          .collection('userLooks')
+          .document(lookId)
+          .updateData({'commentCount': commentCount}).catchError((error) {
+        print(
+            'ERROR updating commentCount to $commentCount in /looks/$lookOwnerId/userLooks/$lookId: $error');
       });
     }).catchError((error) {
       print('ERROR adding comment: $error');
@@ -172,7 +176,12 @@ class Comment extends StatelessWidget {
       child: Column(children: <Widget>[
         ListTile(
           leading: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(avatarUrl),
+            backgroundImage: kIsWeb
+                ? NetworkImage(
+                    avatarUrl,
+                    scale: 1,
+                  )
+                : CachedNetworkImageProvider(avatarUrl),
           ),
           subtitle: Text(
             timeago.format(

@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getoutfit_stylist/controllers/firebase.dart';
 import 'package:getoutfit_stylist/models/user.dart';
@@ -42,7 +42,7 @@ class _UploadState extends State<Upload> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 40),
-            child: SvgPicture.asset(
+            child: Image.asset(
               'assets/images/upload.svg',
               height: orientation == Orientation.portrait ? 300 : 200,
             ),
@@ -124,8 +124,12 @@ class _UploadState extends State<Upload> {
           ),
           ListTile(
             leading: CircleAvatar(
-              backgroundImage:
-                  CachedNetworkImageProvider(widget.currentUser.photoUrl),
+              backgroundImage: kIsWeb
+                  ? NetworkImage(
+                      widget.currentUser.photoUrl,
+                      scale: 1,
+                    )
+                  : CachedNetworkImageProvider(widget.currentUser.photoUrl),
             ),
             title: Container(
               child: TextField(
