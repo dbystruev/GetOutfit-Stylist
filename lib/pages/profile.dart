@@ -201,11 +201,11 @@ class _ProfileState extends State<Profile> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(left: 40),
               child: Image.asset(
-                'assets/images/no_content.svg',
-                height: orientation == Orientation.portrait ? 300 : 200,
+                'assets/images/no_content.png',
+                height: orientation == Orientation.portrait ? 250 : 100,
               ),
+              padding: const EdgeInsets.only(left: 40),
             ),
             Padding(
               child: Text(

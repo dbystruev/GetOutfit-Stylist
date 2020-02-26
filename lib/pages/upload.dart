@@ -41,11 +41,11 @@ class _UploadState extends State<Upload> {
       child: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 40),
             child: Image.asset(
-              'assets/images/upload.svg',
+              'assets/images/upload.png',
               height: orientation == Orientation.portrait ? 300 : 200,
             ),
+            padding: const EdgeInsets.only(left: 40),
           ),
           Padding(
             child: RaisedButton(

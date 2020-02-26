@@ -32,11 +32,11 @@ class _SearchState extends State<Search> {
         child: ListView(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(left: 70),
               child: Image.asset(
-                'assets/images/search.svg',
+                'assets/images/search.png',
                 height: orientation == Orientation.portrait ? 300 : 200,
               ),
+              padding: const EdgeInsets.only(left: 40),
             ),
             Text(
               'Find Users',
