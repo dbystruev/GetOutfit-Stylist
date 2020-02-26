@@ -6,6 +6,7 @@ Widget cachedNetworkImage(String mediaUrl) {
   return kIsWeb
       ? Image.network(
           mediaUrl,
+          fit: BoxFit.contain,
           repeat: ImageRepeat.noRepeat,
           scale: 1,
         )
